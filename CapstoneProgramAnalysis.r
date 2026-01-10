@@ -1,33 +1,30 @@
+sourceFilename <- "C:/Users/brand/OneDrive/PhD/Studies/Capstone Program Survey/Capstone Programs.xlsx"
+
+source("AnalysisFunctions.r")
+
 # Requires install.packages("readxl")
 library("readxl")
 
-sourceFilename <- "C:\\Users\\brand\\OneDrive\\PhD\\Studies\\Capstone Program Survey\\Capstone Programs.xlsx"
-
-# Load a data frame
+# Load a data frame and clean up the column names
 data <- read_excel(sourceFilename)
 colnames(data) <- make.names(colnames(data))
-
-# Convert columns to appropriate formats
-# No longer necessary as since I switched to direct excel import instead of csv.
-# data$School.Size <- as.numeric(gsub(",", "", data$School.Size))
 
 # Add derivative columns
 data$hasCapstone <- ifelse(data$Capstone.CourseId == "None", "No", "Yes")
 
-print(colnames(data));
-
-# Report a contingency table on two columns
-ReportContingencyTable <- function(df, col1, col2) {
-    c1 <- df[[col1]]
-    c2 <- df[[col2]]
-    tab <- table(c1, c2);
-
-    print(tab);
-}
+# print(colnames(data));
 
 # Print a histogram of school size
 #hist(data$School.Size, breaks=15)
 
-ReportContingencyTable(data, "category", "CAE")
-#ReportContingencyTable(data, "category", "hasCapstone")
+q <- CountColumn(data, "category");
+z <- CrosstabColumns(data, "category", "hasCapstone");
+z <- DropColumn(z, "No");
+q <- cbind(Count = q, HasCapstone = z)
+z <- CrosstabMultivalued(data, "category", "CAE");
+q <- cbind(q, z);
+q <- AddAllRow(q);
 
+print(q)
+
+# Next step - create report functions print reports by percentages in both text and LaTeX formats.
