@@ -56,6 +56,27 @@ AddAllRow <- function(tab) {
     return (rbind(tab, All = totals));
 }
 
+AddFractionColumns <- function(tab) {
+    # Get just the first, "Count" column.
+    counts <- tab[,1];
+
+    # Create a new data frame with just the count column
+    out <- data.frame(value = counts, row.names=rownames(tab));
+    colnames(out) <- colnames(tab)[1];
+
+    for (i in 2:ncol(tab)) {
+        # Fraction column
+        colname <- paste0("f_", colnames(tab)[i]);
+        out[[colname]] <- tab[,i] / counts;
+
+        # Count column
+        colname <- paste0("c_", colnames(tab)[i]);
+        out[[colname]] <- tab[,i];
+    }
+    
+    return(as.matrix(out));
+}
+
 #res <- ReportContingencyTable(data, "category", "hasCapstone")
 #res <- DropColumn(res, "No");
 #RenameColumn(res, "Yes", "HasCapstone");
