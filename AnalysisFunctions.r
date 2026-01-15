@@ -77,6 +77,86 @@ AddFractionColumns <- function(tab) {
     return(as.matrix(out));
 }
 
+PrintTableAsLatex <- function(tab) {
+    # Column names drive the types and labeling of the rest of he output.
+    names <- colnames(tab);
+
+    # Helper function
+    isCompound <- function(n) {
+        if (i >= length(names)) return(FALSE);
+        name = names[i];
+        return (substr(name, 1, 2) == "f_"
+            && substr(names[i+1], 1, 2) == "c_"
+            && substr(name, 3, 50) == substr(names[i+1], 3, 50));
+    } 
+
+    # Begin the tabular
+    cat("\n");
+    cat("\\begin{tabular}{l");
+    i <- 1;
+    while (i <= length(names)) {
+        cat(" r");
+        i <- i + ifelse(isCompound(i), 2, 1);
+    }
+    cat("}\n");
+
+    cat("\\toprule\n");
+
+    # Write the column labels
+    cat("~");
+    i <- 1;
+    while (i <= length(names)) {
+        name <- names[i]
+        if (isCompound(i)) {
+            cat(" & \\multicolumn{1}{c}{\\textbf{", substr(name, 3, 50), "}}");
+            i <- i+2;
+        }
+        else {
+            cat(" & \\multicolumn{1}{c}{\\textbf{", name, "}}");
+            i <- i+1;
+        }
+    }
+    cat(" \\\\\n");
+
+    cat("\\midrule\n");
+
+    # Write the data
+    row.names = rownames(tab);
+    for (j in seq_len(nrow(tab))) {
+        rowname <- row.names[j];
+        if (rowname == "ZPUI") rowname <- "PUI";
+        if (rowname == "All") cat("\\midrule\n");
+        cat(rowname);
+        i <- 1;
+        while (i <= length(names)) {
+            name <- names[i];
+            cat(" & ");
+            if (isCompound(i)) {
+                cat(round(tab[j, i] * 100), "\\% ", sep="");
+                count = round(tab[j, i+1]); # Round is probably not necessary. Just being thorough.
+                if (count < 10) {
+                    cat("\\phantom{00}");
+                }
+                else if (count < 100) {
+                    cat("\\phantom{0}");
+                }
+                cat("(", count, ")", sep="");
+                i <- i+2;
+            }
+            else {
+                cat(tab[j, i]);
+                i <- i+1;
+            }
+        }
+        cat("\\\\\n");
+    }
+
+    cat("\\bottomrule\n");
+    cat("\\end{tabular}\n");
+    cat("\n");
+
+}
+
 #res <- ReportContingencyTable(data, "category", "hasCapstone")
 #res <- DropColumn(res, "No");
 #RenameColumn(res, "Yes", "HasCapstone");

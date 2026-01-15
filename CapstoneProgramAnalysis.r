@@ -10,6 +10,7 @@ q <- cbind(Count = q, HasCapstone = z)
 z <- CrosstabMultivalued(data, "category", "CAE");
 q <- cbind(q, z);
 q <- AddAllRow(q);
+q <- AddFractionColumns(q);
 
 print(q)
 
