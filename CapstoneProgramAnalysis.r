@@ -22,4 +22,12 @@ q <- AddFractionColumns(q);
 
 print(q)
 
+q <- CountColumn(data, "category");
+z <- CrosstabMultivalued(data, "category", "Cybersecurity.Program");
+q <- cbind(Count = q, z);
+q <- AddAllRow(q);
+q <- AddFractionColumns(q);
+
+print(q)
+
 # Next step - create report functions print reports by percentages in both text and LaTeX formats.

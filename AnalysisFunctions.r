@@ -154,8 +154,78 @@ PrintTableAsLatex <- function(tab) {
     cat("\\bottomrule\n");
     cat("\\end{tabular}\n");
     cat("\n");
-
 }
+
+ReportCorrelationToLatex <- function(counts, tab) {
+
+    # Helper function
+    reportPercentAndValue <- function(sum, value) {
+        cat(" & ", round(value / sum * 100), "\\% ", sep="");
+        if (value < 10) {
+            cat("\\phantom{00}");
+        }
+        else if (value < 100) {
+            cat("\\phantom{0}");
+        }
+        cat("(", value, ")", sep="");
+    }
+
+    # Column names drive the types and labeling of the rest of he output.
+    col.names <- colnames(tab);
+
+    # Begin the tabular
+    cat("\n");
+    cat("\\begin{tabular}{l r");
+    for (i in 1:length(col.names)) {
+        cat(" r");
+    }
+    cat("}\n");
+
+    cat("\\toprule\n");
+
+    # Write the column labels
+    cat("~ & \\multicolumn{1}{c}{\\textbf{Count}}");
+    for (name in col.names) {
+        cat(" & \\multicolumn{1}{c}{\\textbf{", name, "}}", sep="");
+    }
+    cat(" \\\\\n");
+
+    cat("\\midrule\n");
+
+
+    # Write the data
+    row.names = rownames(tab);
+    for (j in seq_len(nrow(tab))) {
+        rowname <- row.names[j];
+        if (rowname == "ZPUI") rowname <- "PUI";
+        cat(rowname);
+
+        cat(" & ", counts[j], sep="");
+
+        for (i in seq_len(length(col.names))) {
+            reportPercentAndValue(counts[j], tab[j, i]);
+        }
+        cat("\\\\\n");
+    }
+
+    cat("\\midrule\n");
+
+    all.sum <- sum(counts);
+    cat("All & ", all.sum, sep="");
+    for (i in seq_len(length(col.names))) {
+        reportPercentAndValue(all.sum, sum(tab[,i]));
+    }
+    cat("\\\\\n");
+
+    cat("\\bottomrule\n");
+    cat("\\end{tabular}\n");
+    cat("\n");
+}
+
+# Next Steps
+# * Add p-value and Cramer's V to correlation table
+# * Function to reorder the columns.
+
 
 #res <- ReportContingencyTable(data, "category", "hasCapstone")
 #res <- DropColumn(res, "No");
