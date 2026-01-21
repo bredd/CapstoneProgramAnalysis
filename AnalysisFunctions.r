@@ -218,6 +218,14 @@ ReportCorrelationToLatex <- function(counts, tab) {
     cat("\\\\\n");
 
     cat("\\bottomrule\n");
+
+    # Use a chi squared test to calculate p-value and Cramer's V
+    chisq <- chisq.test(tab);
+    V <- sqrt(chisq$statistic / (sum(tab) * (min(dim(tab)) - 1)));
+    cat("\\multicolumn{", 2+length(col.names),
+        "}{r}{p=", format(round(chisq$p.value, 3), nsmall=3),
+        "\\hspace{2em}V=", format(round(V, 2), nsmall=2), "}\\\\\n", sep="");
+
     cat("\\end{tabular}\n");
     cat("\n");
 }
