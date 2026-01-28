@@ -48,6 +48,12 @@ CrosstabMultivalued <- function(df, col1, col2_multi) {
     return (table(df2$single, df2$value));
 }
 
+MakeSimpleTable <- function(labels, counts) {
+    tbl <- table(factor(labels));
+    tbl[] <- counts;
+    return(tbl);
+}
+
 AddAllRow <- function(tab) {
     if (length(dim(tab)) != 2) {
          stop("Input must be a 2‑dimensional table.")
