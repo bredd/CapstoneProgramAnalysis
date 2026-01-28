@@ -11,6 +11,9 @@ ct.securityCourse <- CrosstabColumns(data, "category", "Security.Course.in.Progr
 ct.securityCourse <- ct.securityCourse[, c("Required", "Elective", "None")];
 ReportCorrelationToLatex(counts, ct.securityCourse);
 
+ct.cae <- CrosstabMultivalued(data, "category", "CAE");
+ReportCorrelationToLatex(counts, ct.cae);
+
 #z <- DropColumn(z, "No");
 #q <- cbind(Count = q, HasCapstone = z)
 #z <- CrosstabMultivalued(data, "category", "CAE");

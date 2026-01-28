@@ -124,7 +124,7 @@ PrintTableAsLatex <- function(tab) {
     row.names = rownames(tab);
     for (j in seq_len(nrow(tab))) {
         rowname <- row.names[j];
-        if (rowname == "ZPUI") rowname <- "PUI";
+        if (rowname == "ZPUI" || rowname == "Z") rowname <- "PUI";
         if (rowname == "All") cat("\\midrule\n");
         cat(rowname);
         i <- 1;
@@ -156,7 +156,7 @@ PrintTableAsLatex <- function(tab) {
     cat("\n");
 }
 
-ReportCorrelationToLatex <- function(counts, tab) {
+ReportCorrelationToLatex <- function(counts, tab, includeChiTest = FALSE) {
 
     # Helper function
     reportPercentAndValue <- function(sum, value) {
@@ -197,7 +197,7 @@ ReportCorrelationToLatex <- function(counts, tab) {
     row.names = rownames(tab);
     for (j in seq_len(nrow(tab))) {
         rowname <- row.names[j];
-        if (rowname == "ZPUI") rowname <- "PUI";
+        if (rowname == "ZPUI" || rowname == "Z") rowname <- "PUI";
         cat(rowname);
 
         cat(" & ", counts[j], sep="");
@@ -219,12 +219,14 @@ ReportCorrelationToLatex <- function(counts, tab) {
 
     cat("\\bottomrule\n");
 
-    # Use a chi squared test to calculate p-value and Cramer's V
-    chisq <- chisq.test(tab);
-    V <- sqrt(chisq$statistic / (sum(tab) * (min(dim(tab)) - 1)));
-    cat("\\multicolumn{", 2+length(col.names),
-        "}{r}{p=", format(round(chisq$p.value, 3), nsmall=3),
-        "\\hspace{2em}V=", format(round(V, 2), nsmall=2), "}\\\\\n", sep="");
+    if (includeChiTest) {
+        # Use a chi squared test to calculate p-value and Cramer's V
+        chisq <- chisq.test(tab);
+        V <- sqrt(chisq$statistic / (sum(tab) * (min(dim(tab)) - 1)));
+        cat("\\multicolumn{", 2+length(col.names),
+            "}{r}{p=", format(round(chisq$p.value, 3), nsmall=3),
+            "\\hspace{2em}V=", format(round(V, 2), nsmall=2), "}\\\\\n", sep="");
+    }
 
     cat("\\end{tabular}\n");
     cat("\n");
