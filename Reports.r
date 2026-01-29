@@ -10,10 +10,8 @@ cat("\\section{Program}\n\n");
 cat("\\subsection{Security Course}\n\n");
 
 ct.securityCourse <- CrosstabColumns(sample, "category", "Security.Course.in.Program");
-ct.securityCourse <- as.table(cbind(ct.securityCourse, Exists = ct.securityCourse[,"Required"] + ct.securityCourse[,"Elective"]))
-ct.securityCourse <- ct.securityCourse[, c("Exists", "Required", "None")];
+ct.securityCourse <- as.table(cbind(Offer = ct.securityCourse[,"Required"] + ct.securityCourse[,"Elective"], Require = ct.securityCourse[,"Required"], None = ct.securityCourse[,"None"]))
 ReportCorrelationToLatex(categories, ct.securityCourse, chiTest="bycol");
-
 
 #hasCapstone <- CrosstabColumns(sample, "category", "hasCapstone");
 #hasCapstone <- hasCapstone[, c("Yes", "No")] # Reorder the columns. Yes first, then no.
