@@ -163,7 +163,7 @@ PrintTableAsLatex <- function(tab) {
 }
 
 # chiTest can be "comp" for comprehensive, or "bycol" for by column.
-ReportCorrelationToLatex <- function(counts, tab, chiTest = NULL) {
+ReportCorrelationToLatex <- function(counts, tab, chiTest = "") {
 
     # Helper function
     reportPercentAndValue <- function(sum, value) {
