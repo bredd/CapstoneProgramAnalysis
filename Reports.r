@@ -7,11 +7,17 @@ cat("\n\n\n");
 
 cat("\\section{Program}\n\n");
 
-cat("\\subsection{Security Course}\n\n");
+cat("\\subsection{tab:programs-cyber-course}\n\n");
 
 ct.securityCourse <- CrosstabColumns(sample, "category", "Security.Course.in.Program");
 ct.securityCourse <- as.table(cbind(Offer = ct.securityCourse[,"Required"] + ct.securityCourse[,"Elective"], Require = ct.securityCourse[,"Required"], None = ct.securityCourse[,"None"]))
 ReportCorrelationToLatex(categories, ct.securityCourse, chiTest="bycol");
+
+cat("\\subsection{tab:programs-cae}\n\n");
+
+ct.cae <- CrosstabMultivalued(sample, "category", "CAE");
+ReportCorrelationToLatex(categories, ct.cae, chiTest="bycol");
+
 
 #hasCapstone <- CrosstabColumns(sample, "category", "hasCapstone");
 #hasCapstone <- hasCapstone[, c("Yes", "No")] # Reorder the columns. Yes first, then no.
@@ -19,8 +25,6 @@ ReportCorrelationToLatex(categories, ct.securityCourse, chiTest="bycol");
 
 #cat("\\section{CAE}");
 
-#ct.cae <- CrosstabMultivalued(sample, "category", "CAE");
-#ReportCorrelationToLatex(categories, ct.cae);
 
 #cat("\\subsection{Population}");
 
