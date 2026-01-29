@@ -162,7 +162,8 @@ PrintTableAsLatex <- function(tab) {
     cat("\n");
 }
 
-ReportCorrelationToLatex <- function(counts, tab, includeChiTest = FALSE) {
+# chiTest can be "comp" for comprehensive, or "bycol" for by column.
+ReportCorrelationToLatex <- function(counts, tab, chiTest = NULL) {
 
     # Helper function
     reportPercentAndValue <- function(sum, value) {
@@ -223,9 +224,34 @@ ReportCorrelationToLatex <- function(counts, tab, includeChiTest = FALSE) {
     }
     cat("\\\\\n");
 
+    # Do a chi squared test on each column
+    if (chiTest == "bycol") {
+        cat("\\midrule\n");
+        cat("p & ~");
+        for (i in seq_len(length(col.names))) {
+            chisq <- chisq.test(cbind(tab[,i], counts - tab[,i]));
+            p <- chisq$p.value;
+            cat(" & ");
+            cat(format(round(p, 3), nsmall=3));
+            if (p < 0.001) {
+                cat("***");
+            }
+            else if (p < 0.01) {
+                cat("**\\phantom{*}");
+            }
+            else if (p < 0.05) {
+                cat("*\\phantom{**}");
+            }
+            else {
+                cat("\\phantom{***}");
+            }
+        }
+        cat(" \\\\\n");
+    }
+
     cat("\\bottomrule\n");
 
-    if (includeChiTest) {
+    if (chiTest == "comp") {
         # Use a chi squared test to calculate p-value and Cramer's V
         chisq <- chisq.test(tab);
         V <- sqrt(chisq$statistic / (sum(tab) * (min(dim(tab)) - 1)));

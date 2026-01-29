@@ -1,36 +1,44 @@
 source("LoadData.r")
 source("AnalysisFunctions.r")
 
-sample.categories <- CountColumn(sample, "category");
+categories <- CountColumn(sample, "category");
 
-hasCapstone <- CrosstabColumns(sample, "category", "hasCapstone");
-hasCapstone <- hasCapstone[, c("Yes", "No")]
-ReportCorrelationToLatex(sample.categories, hasCapstone, includeChiTest=TRUE);
+cat("\n\n\n");
+
+cat("\\section{Program}\n\n");
+
+cat("\\subsection{Security Course}\n\n");
 
 ct.securityCourse <- CrosstabColumns(sample, "category", "Security.Course.in.Program");
-ct.securityCourse <- ct.securityCourse[, c("Required", "Elective", "None")];
-ReportCorrelationToLatex(sample.categories, ct.securityCourse, includeChiTest=TRUE);
+ct.securityCourse <- as.table(cbind(ct.securityCourse, Exists = ct.securityCourse[,"Required"] + ct.securityCourse[,"Elective"]))
+ct.securityCourse <- ct.securityCourse[, c("Exists", "Required", "None")];
+ReportCorrelationToLatex(categories, ct.securityCourse, chiTest="bycol");
 
-cat("\\section{CAE}");
 
-ct.cae <- CrosstabMultivalued(sample, "category", "CAE");
-ReportCorrelationToLatex(sample.categories, ct.cae);
+#hasCapstone <- CrosstabColumns(sample, "category", "hasCapstone");
+#hasCapstone <- hasCapstone[, c("Yes", "No")] # Reorder the columns. Yes first, then no.
+#ReportCorrelationToLatex(categories, hasCapstone, includeChiTest=TRUE);
 
-cat("\\subsection{Population}");
+#cat("\\section{CAE}");
 
-pop.categories = CountColumn(pop, "category");
-ct.pop.cae <- CrosstabMultivalued(pop, "category", "CAE");
-ReportCorrelationToLatex(pop.categories, ct.pop.cae);
+#ct.cae <- CrosstabMultivalued(sample, "category", "CAE");
+#ReportCorrelationToLatex(categories, ct.cae);
+
+#cat("\\subsection{Population}");
+
+#pop.categories = CountColumn(pop, "category");
+#ct.pop.cae <- CrosstabMultivalued(pop, "category", "CAE");
+#ReportCorrelationToLatex(pop.categories, ct.pop.cae);
 
 # Compare sample CAE to population on CAE-CD
-cat("\\subsection{Pop to Sample}");
+#cat("\\subsection{Pop to Sample}");
 
-comp.labels <- c("population", "sample");
-comp.counts <- MakeSimpleTable(comp.labels, c(nrow(pop), nrow(sample)));
-comp.tab <- as.table(rbind(as.vector(ct.pop.cae[, "CAE-CD", drop = FALSE]), as.vector(ct.cae[, "CAE-CD", drop = FALSE])));
-rownames(comp.tab) <- comp.labels;
-colnames(comp.tab) <- c("R1", "R2", "PUI");
-ReportCorrelationToLatex(comp.counts, comp.tab, includeChiTest=TRUE);
+#comp.labels <- c("population", "sample");
+#comp.counts <- MakeSimpleTable(comp.labels, c(nrow(pop), nrow(sample)));
+#comp.tab <- as.table(rbind(as.vector(ct.pop.cae[, "CAE-CD", drop = FALSE]), as.vector(ct.cae[, "CAE-CD", drop = FALSE])));
+#rownames(comp.tab) <- comp.labels;
+#colnames(comp.tab) <- c("R1", "R2", "PUI");
+#ReportCorrelationToLatex(comp.counts, comp.tab, includeChiTest=TRUE);
 
 #z <- DropColumn(z, "No");
 #q <- cbind(Count = q, HasCapstone = z)
