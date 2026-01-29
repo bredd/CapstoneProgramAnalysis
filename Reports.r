@@ -1,5 +1,6 @@
 source("LoadData.r")
 source("AnalysisFunctions.r")
+source("ReportCaeComparison.r")
 
 categories <- CountColumn(sample, "category");
 
@@ -33,6 +34,8 @@ comp.tab <- as.table(rbind(as.vector(ct.pop.cae[, "CAE-CD", drop = FALSE]), as.v
 rownames(comp.tab) <- comp.labels;
 colnames(comp.tab) <- c("R1", "R2", "PUI");
 ReportCorrelationToLatex(comp.counts, comp.tab, chiTest="bycol");
+
+ReportCaeComparison(categories, ct.cae, pop.categories, ct.pop.cae);
 
 #hasCapstone <- CrosstabColumns(sample, "category", "hasCapstone");
 #hasCapstone <- hasCapstone[, c("Yes", "No")] # Reorder the columns. Yes first, then no.
