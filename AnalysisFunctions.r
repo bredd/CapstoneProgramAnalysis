@@ -1,3 +1,21 @@
+
+escape_regex <- function(x) {
+  gsub("([][{}()+*^$|\\\\.?])", "\\\\\\1", x)
+}
+
+# Take one multivalued columns and generate new columns for each distinct value
+ExpandMultivaluedColumn <- function(df, colname) {
+    src_col <- df[[colname]];
+    new_col_names <- unique(unlist(strsplit(src_col, "\\s*;\\s*")));
+    new_col_names <- new_col_names[!is.na(new_col_names)]
+
+    for (col_name in new_col_names) {
+        patt <- paste0("(^|;)", escape_regex(col_name), "($|;)");
+        df[[col_name]] <- ifelse(grepl(patt, src_col), "Yes", "No");
+    }
+    return(df);
+}
+
 DropColumn <- function(tab, colname) {
     return(tab[, colnames(tab) != colname]);
 }
