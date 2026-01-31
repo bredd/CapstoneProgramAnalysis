@@ -40,8 +40,12 @@ colnames(comp.tab) <- c("R1", "R2", "PUI");
 #ReportCorrelationToLatex(comp.counts, comp.tab, chiTest="bycol");
 ReportCaeComparison(categories, ct.cae, pop.categories, ct.pop.cae);
 
-# CAE-CD xt Select Programs
+cat("\\subsection{other:programs-correlation-cae}\n\n");
 
+chisq = chisq.test(comp.tab);
+cat("chi-square goodnes-of-fit test on CAE sample vs population: $\\chi^2_{(", chisq$parameter, ")} = ", format(round(chisq$statistic, 3), nsmall=3), ", p = ", format(round(chisq$p.value, 3), nsmall=3), "$\n\n", sep="");
+
+# CAE-CD xt Select Programs
 cat("\\subsection{tab:programs-caecd-cyberprog}\n")
 
 counts.caecd = CountColumn(sample, "CAE-CD")[c("Yes", "No")];
@@ -50,6 +54,10 @@ ct.caecd.select <- ct.caecd.prog[,  c("None", "BS", "MS", "Minor", "Certificate"
 ct.caecd.select <- InvertColumn(counts.caecd, ct.caecd.select, "None", "Any");
 ct.caecd.select <- RenameColumn(ct.caecd.select, "IndustryCert", "Industry Certification");
 ReportCorrelationToLatexTransposed(counts.caecd, ct.caecd.select, label="CAE-CD", sumLabel="Either", chiTest="bycol");
+
+# CAE-CD xt Cyber course
+
+
 
 # CAE-CD xt Select Programs
 #ct.caecd.select <- ct.caecd.prog[, c("BS", "MS", "Certificate", "None")];
