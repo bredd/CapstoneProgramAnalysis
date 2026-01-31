@@ -38,6 +38,12 @@ RenameColumn <- function(tab, oldName, newName) {
     return(tab);
 }
 
+ReorderAndRenameCols <- function(tab, oldnames, newnames) {
+    tab <- tab[, oldnames];
+    colnames(tab) <- newnames;
+    tab;
+}
+
 InvertColumn <- function(counts, tab, oldColname, newColname) {
     tab <- tab[rownames(counts),]; # Get the rows in the same order as the counts
     tab[, oldColname] <- counts - tab[, oldColname]; # Substitute the difference
