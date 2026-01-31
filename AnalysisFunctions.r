@@ -319,7 +319,7 @@ ReportCorrelationToLatex <- function(counts, tab, label="~", chiTest = "") {
 }
 
 # chiTest can be "comp" for comprehensive, or "bycol" for by column.
-ReportCorrelationToLatexTransposed <- function(counts, tab, label = "~", sumLabel = "Sum", chiTest = "") {
+ReportCorrelationToLatexTransposed <- function(counts, tab, label = "~", colLabel = "", sumLabel = "Sum", countLabel="~", chiTest = "") {
     doChiTest = (chiTest == "byrow" || chiTest == "bycol");
 
     # Put the rows in the table in the same order as the rows in the counts (sometimes they differ)
@@ -344,6 +344,9 @@ ReportCorrelationToLatexTransposed <- function(counts, tab, label = "~", sumLabe
     cat("\\toprule\n");
 
     # Write the column labels
+    if (nzchar(colLabel)) {
+        cat("~ & \\multicolumn{", length(row.names)+1, "}{c}{\\textbf{", colLabel, "}} & ~\\\\\n");
+    }
     cat("\\textbf{", label, "}", sep="");
     for (name in row.names) {
         if (name == "ZPUI" || name == "Z") name <- "PUI";
@@ -358,7 +361,7 @@ ReportCorrelationToLatexTransposed <- function(counts, tab, label = "~", sumLabe
     cat("\\midrule\n");
 
     # Write the "Count" row
-    cat("Count");
+    cat(countLabel);
     for (j in seq_len(length(row.names))) {
          cat(" & (", counts[j], ")", sep="");
     }
