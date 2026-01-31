@@ -1,4 +1,17 @@
 
+withwarn.chisq.test <- function(x, ...) {
+    warned <- FALSE;
+    result <- withCallingHandlers(
+        chisq.test(x, ...),
+        warning = function(w) {
+            warned <<- TRUE;
+            invokeRestart("muffleWarning");
+        }
+    );
+    result$warn <- warned;
+    return(result);
+}
+
 escape_regex <- function(x) {
   gsub("([][{}()+*^$|\\\\.?])", "\\\\\\1", x)
 }
@@ -247,21 +260,26 @@ ReportCorrelationToLatex <- function(counts, tab, chiTest = "") {
         cat("\\midrule\n");
         cat("p & ~");
         for (i in seq_len(length(col.names))) {
-            chisq <- chisq.test(cbind(tab[,i], counts - tab[,i]));
-            p <- chisq$p.value;
+            chisq <- withwarn.chisq.test(cbind(tab[,i], counts - tab[,i]));
             cat(" & ");
-            cat(format(round(p, 3), nsmall=3));
-            if (p < 0.001) {
-                cat("***");
-            }
-            else if (p < 0.01) {
-                cat("**\\phantom{*}");
-            }
-            else if (p < 0.05) {
-                cat("*\\phantom{**}");
+            if (!chisq$warn) {
+                p <- chisq$p.value;
+                cat(format(round(p, 3), nsmall=3));
+                if (p < 0.001) {
+                    cat("***");
+                }
+                else if (p < 0.01) {
+                    cat("**\\phantom{*}");
+                }
+                else if (p < 0.05) {
+                    cat("*\\phantom{**}");
+                }
+                else {
+                    cat("\\phantom{***}");
+                }
             }
             else {
-                cat("\\phantom{***}");
+                cat("~");
             }
         }
         cat(" \\\\\n");
