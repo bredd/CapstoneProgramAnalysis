@@ -200,20 +200,42 @@ PrintTableAsLatex <- function(tab) {
     cat("\n");
 }
 
-# chiTest can be "comp" for comprehensive, or "bycol" for by column.
-ReportCorrelationToLatex <- function(counts, tab, chiTest = "") {
-
-    # Helper function
-    reportPercentAndValue <- function(sum, value) {
-        cat(" & ", round(value / sum * 100), "\\% ", sep="");
-        if (value < 10) {
-            cat("\\phantom{00}");
-        }
-        else if (value < 100) {
-            cat("\\phantom{0}");
-        }
-        cat("(", value, ")", sep="");
+# Helper function
+reportPercentAndValue <- function(sum, value) {
+    cat(" & ", round(value / sum * 100), "\\% ", sep="");
+    if (value < 10) {
+        cat("\\phantom{00}");
     }
+    else if (value < 100) {
+        cat("\\phantom{0}");
+    }
+    cat("(", value, ")", sep="");
+}
+
+reportChiSq <- function(chisq) {
+    cat(" & ");
+    if (chisq$warn) {
+        cat("~");
+        return();
+    }
+    p <- chisq$p.value;
+    cat(format(round(p, 3), nsmall=3));
+    if (p < 0.001) {
+        cat("***");
+    }
+    else if (p < 0.01) {
+        cat("**\\phantom{*}");
+    }
+    else if (p < 0.05) {
+        cat("*\\phantom{**}");
+    }
+    else {
+        cat("\\phantom{***}");
+    }
+}
+
+# chiTest can be "comp" for comprehensive, or "bycol" for by column.
+ReportCorrelationToLatex <- function(counts, tab, label="~", chiTest = "") {
 
     # Put the rows in the table in the same order as the rows in the counts (sometimes they differ)
     tab = tab[rownames(counts),]
@@ -232,7 +254,7 @@ ReportCorrelationToLatex <- function(counts, tab, chiTest = "") {
     cat("\\toprule\n");
 
     # Write the column labels
-    cat("~ & \\multicolumn{1}{c}{\\textbf{Count}}");
+    cat(label, " & \\multicolumn{1}{c}{\\textbf{Count}}", sep="");
     for (name in col.names) {
         cat(" & \\multicolumn{1}{c}{\\textbf{", name, "}}", sep="");
     }
@@ -270,26 +292,7 @@ ReportCorrelationToLatex <- function(counts, tab, chiTest = "") {
         cat("p & ~");
         for (i in seq_len(length(col.names))) {
             chisq <- withwarn.chisq.test(cbind(tab[,i], counts - tab[,i]));
-            cat(" & ");
-            if (!chisq$warn) {
-                p <- chisq$p.value;
-                cat(format(round(p, 3), nsmall=3));
-                if (p < 0.001) {
-                    cat("***");
-                }
-                else if (p < 0.01) {
-                    cat("**\\phantom{*}");
-                }
-                else if (p < 0.05) {
-                    cat("*\\phantom{**}");
-                }
-                else {
-                    cat("\\phantom{***}");
-                }
-            }
-            else {
-                cat("~");
-            }
+            reportChiSq(chisq);
         }
         cat(" \\\\\n");
     }
@@ -308,6 +311,82 @@ ReportCorrelationToLatex <- function(counts, tab, chiTest = "") {
     cat("\\end{tabular}\n");
     cat("\n");
 }
+
+# chiTest can be "comp" for comprehensive, or "bycol" for by column.
+ReportCorrelationToLatexTransposed <- function(counts, tab, label = "~", sumLabel = "Sum", chiTest = "") {
+    doChiTest = (chiTest == "byrow" || chiTest == "bycol");
+
+    # Put the rows in the table in the same order as the rows in the counts (sometimes they differ)
+    tab = tab[rownames(counts),]
+
+    # Column names drive the types and labeling of the rest of he output.
+    col.names <- colnames(tab);
+    row.names <- rownames(counts);
+
+    # Begin the tabular
+    cat("\n");
+    cat("\\begin{tabular}{l r");
+    for (i in 1:length(row.names)) {
+        cat(" r");
+    }
+    cat(" r"); # All
+    if (doChiTest) {
+        cat(" r");
+    }
+    cat("}\n");
+
+    cat("\\toprule\n");
+
+    # Write the column labels
+    cat("\\textbf{", label, "}", sep="");
+    for (name in row.names) {
+        if (name == "ZPUI" || name == "Z") name <- "PUI";
+        cat(" & \\multicolumn{1}{c}{\\textbf{", name, "}}", sep="");
+    }
+    cat(" & \\multicolumn{1}{c}{\\textbf{", sumLabel, "}}", sep="");
+    if (doChiTest) {
+        cat(" & \\multicolumn{1}{c}{\\textbf{p}}");
+    }
+    cat(" \\\\\n");
+
+    cat("\\midrule\n");
+
+    # Write the "Count" row
+    cat("Count");
+    for (j in seq_len(length(row.names))) {
+         cat(" & (", counts[j], ")", sep="");
+    }
+    cat(" & (", sum(counts), ")", sep="");
+    if (doChiTest) {
+        cat (" & ~");
+    }
+    cat(" \\\\\n"); 
+
+    # Write the data
+    all.sum <- sum(counts);
+    for (i in seq_len(length(col.names))) {
+        cat(col.names[i]);
+
+        for (j in seq_len(length(row.names))) {
+            reportPercentAndValue(counts[j], tab[j, i]);
+        }
+
+        # All
+        reportPercentAndValue(all.sum, sum(tab[,i]))
+
+        if (doChiTest) {
+            chisq <- withwarn.chisq.test(cbind(tab[,i], counts - tab[,i]));
+            reportChiSq(chisq);
+        }
+
+        cat("\\\\\n");
+    }
+
+    cat("\\bottomrule\n");
+    cat("\\end{tabular}\n");
+    cat("\n");
+}
+
 
 # Next Steps
 # * Add p-value and Cramer's V to correlation table

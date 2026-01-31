@@ -49,6 +49,8 @@ ct.caecd.select <- ct.caecd.prog[, c("BS", "MS", "Certificate", "None")];
 ct.caecd.select <- InvertColumn(counts.caecd, ct.caecd.select, "None", "Any");
 ReportCorrelationToLatex(counts.caecd, ct.caecd.select, chiTest="bycol");
 
+ReportCorrelationToLatexTransposed(counts.caecd, ct.caecd.prog, label="CAE-CD", sumLabel="Either", chiTest="bycol");
+
 #hasCapstone <- CrosstabColumns(sample, "category", "hasCapstone");
 #hasCapstone <- hasCapstone[, c("Yes", "No")] # Reorder the columns. Yes first, then no.
 #ReportCorrelationToLatex(categories, hasCapstone, includeChiTest=TRUE);
