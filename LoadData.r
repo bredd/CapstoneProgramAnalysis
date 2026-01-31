@@ -9,13 +9,7 @@ library("readxl")
 sample <- read_excel(sampleFilename)
 colnames(sample) <- make.names(colnames(sample))
 
-# Add derivative columns
-sample$hasCapstone <- ifelse(sample$Capstone.CourseId == "None", "No", "Yes")
-
 # Load the population data
 pop <- read_excel(populationFilename, sheet = populationSheetName)
-
-# Prepare the color palette
-# https://at.mo.gov/wp-content/uploads/data-viz-accessible-color-palette.pdf
 
 print("Capstone data loaded into 'sample' and 'pop'.");

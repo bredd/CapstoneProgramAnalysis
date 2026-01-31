@@ -230,18 +230,21 @@ ReportCorrelationToLatex <- function(counts, tab, chiTest = "") {
 
     cat("\\midrule\n");
 
-
     # Write the data
-    row.names = rownames(tab);
+    row.names = rownames(counts);
     for (j in seq_len(nrow(tab))) {
         rowname <- row.names[j];
+        k <- match(rowname, rownames(tab));
+        if (is.na(k)) {
+            stop("Row names don't match between counts and crosstab.");
+        }
         if (rowname == "ZPUI" || rowname == "Z") rowname <- "PUI";
         cat(rowname);
 
         cat(" & ", counts[j], sep="");
 
         for (i in seq_len(length(col.names))) {
-            reportPercentAndValue(counts[j], tab[j, i]);
+            reportPercentAndValue(counts[j], tab[k, i]);
         }
         cat("\\\\\n");
     }

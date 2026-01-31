@@ -2,6 +2,10 @@ source("LoadData.r")
 source("AnalysisFunctions.r")
 source("ReportCaeComparison.r")
 
+# Add derivative columns
+sample$hasCapstone <- ifelse(sample$Capstone.CourseId == "None", "No", "Yes")
+sample <- ExpandMultivaluedColumn(sample, "CAE");
+
 categories <- CountColumn(sample, "category");
 
 cat("\n\n\n");
@@ -36,6 +40,10 @@ colnames(comp.tab) <- c("R1", "R2", "PUI");
 ReportCorrelationToLatex(comp.counts, comp.tab, chiTest="bycol");
 
 ReportCaeComparison(categories, ct.cae, pop.categories, ct.pop.cae);
+
+counts.caecd = CountColumn(sample, "CAE-CD")[c("Yes", "No")];
+ct.caecd.prog <- CrosstabMultivalued(sample, "CAE-CD", "Cybersecurity.Program");
+ReportCorrelationToLatex(counts.caecd, ct.caecd.prog);
 
 #hasCapstone <- CrosstabColumns(sample, "category", "hasCapstone");
 #hasCapstone <- hasCapstone[, c("Yes", "No")] # Reorder the columns. Yes first, then no.
