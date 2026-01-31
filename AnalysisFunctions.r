@@ -38,6 +38,13 @@ RenameColumn <- function(tab, oldName, newName) {
     return(tab);
 }
 
+InvertColumn <- function(counts, tab, oldColname, newColname) {
+    tab <- tab[rownames(counts),]; # Get the rows in the same order as the counts
+    tab[, oldColname] <- counts - tab[, oldColname]; # Substitute the difference
+    colnames(tab)[colnames(tab) == oldColname] <- newColname; # Rename the column
+    tab;
+}
+
 # Generate a count table on one column
 CountColumn <- function(df, col) {
     return(table(df[[col]]));
@@ -208,6 +215,9 @@ ReportCorrelationToLatex <- function(counts, tab, chiTest = "") {
         cat("(", value, ")", sep="");
     }
 
+    # Put the rows in the table in the same order as the rows in the counts (sometimes they differ)
+    tab = tab[rownames(counts),]
+
     # Column names drive the types and labeling of the rest of he output.
     col.names <- colnames(tab);
 
@@ -234,17 +244,13 @@ ReportCorrelationToLatex <- function(counts, tab, chiTest = "") {
     row.names = rownames(counts);
     for (j in seq_len(nrow(tab))) {
         rowname <- row.names[j];
-        k <- match(rowname, rownames(tab));
-        if (is.na(k)) {
-            stop("Row names don't match between counts and crosstab.");
-        }
         if (rowname == "ZPUI" || rowname == "Z") rowname <- "PUI";
         cat(rowname);
 
         cat(" & ", counts[j], sep="");
 
         for (i in seq_len(length(col.names))) {
-            reportPercentAndValue(counts[j], tab[k, i]);
+            reportPercentAndValue(counts[j], tab[j, i]);
         }
         cat("\\\\\n");
     }

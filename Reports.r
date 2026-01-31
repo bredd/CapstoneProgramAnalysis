@@ -43,7 +43,11 @@ ReportCaeComparison(categories, ct.cae, pop.categories, ct.pop.cae);
 
 counts.caecd = CountColumn(sample, "CAE-CD")[c("Yes", "No")];
 ct.caecd.prog <- CrosstabMultivalued(sample, "CAE-CD", "Cybersecurity.Program");
-ReportCorrelationToLatex(counts.caecd, ct.caecd.prog);
+ReportCorrelationToLatex(counts.caecd, ct.caecd.prog, chiTest="bycol");
+
+ct.caecd.select <- ct.caecd.prog[, c("BS", "MS", "Certificate", "None")];
+ct.caecd.select <- InvertColumn(counts.caecd, ct.caecd.select, "None", "Any");
+ReportCorrelationToLatex(counts.caecd, ct.caecd.select, chiTest="bycol");
 
 #hasCapstone <- CrosstabColumns(sample, "category", "hasCapstone");
 #hasCapstone <- hasCapstone[, c("Yes", "No")] # Reorder the columns. Yes first, then no.
