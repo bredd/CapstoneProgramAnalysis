@@ -345,14 +345,14 @@ ReportCorrelationToLatexTransposed <- function(counts, tab, label = "~", colLabe
 
     # Write the column labels
     if (nzchar(colLabel)) {
-        cat("~ & \\multicolumn{", length(row.names)+1, "}{c}{\\textbf{", colLabel, "}} & ~\\\\\n");
+        cat("~ & ~ & \\multicolumn{", length(row.names), "}{c}{\\textbf{", colLabel, "}} & ~\\\\\n");
     }
     cat("\\textbf{", label, "}", sep="");
+    cat(" & \\multicolumn{1}{c}{\\textbf{", sumLabel, "}}", sep="");
     for (name in row.names) {
         if (name == "ZPUI" || name == "Z") name <- "PUI";
         cat(" & \\multicolumn{1}{c}{\\textbf{", name, "}}", sep="");
     }
-    cat(" & \\multicolumn{1}{c}{\\textbf{", sumLabel, "}}", sep="");
     if (doChiTest) {
         cat(" & \\multicolumn{1}{c}{\\textbf{p}}");
     }
@@ -362,10 +362,10 @@ ReportCorrelationToLatexTransposed <- function(counts, tab, label = "~", colLabe
 
     # Write the "Count" row
     cat(countLabel);
+    cat(" & (", sum(counts), ")", sep="");
     for (j in seq_len(length(row.names))) {
          cat(" & (", counts[j], ")", sep="");
     }
-    cat(" & (", sum(counts), ")", sep="");
     if (doChiTest) {
         cat (" & ~");
     }
@@ -376,12 +376,12 @@ ReportCorrelationToLatexTransposed <- function(counts, tab, label = "~", colLabe
     for (i in seq_len(length(col.names))) {
         cat(col.names[i]);
 
+        # Sum
+        reportPercentAndValue(all.sum, sum(tab[,i]))
+
         for (j in seq_len(length(row.names))) {
             reportPercentAndValue(counts[j], tab[j, i]);
         }
-
-        # All
-        reportPercentAndValue(all.sum, sum(tab[,i]))
 
         if (doChiTest) {
             chisq <- withwarn.chisq.test(cbind(tab[,i], counts - tab[,i]));
