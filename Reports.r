@@ -73,6 +73,12 @@ ReportAssociation(sample, "hasCapstone", "Security.Course.in.Program");
 ReportAssociation(sample, "hasCapstone", "hasCyberProg");
 ReportAssociation(sample, "hasCapstone", "CAE-CD");
 
+cat("\\subsection{tab:programs-capstone}\n")
+
+ct.capstoneCourse <- CrosstabColumns(sample, "category", "hasCapstone");
+ct.capstoneCourse <- as.table(cbind(ct.capstoneCourse[,"Yes"]));
+colnames(ct.capstoneCourse) <- c("Has Capstone");
+ReportCorrelationToLatex(categories, ct.capstoneCourse, chiTest="bycol");
 
 
 # CAE-CD xt Select Programs

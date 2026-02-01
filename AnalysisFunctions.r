@@ -244,7 +244,7 @@ reportChiSq <- function(chisq) {
 ReportCorrelationToLatex <- function(counts, tab, label="~", chiTest = "") {
 
     # Put the rows in the table in the same order as the rows in the counts (sometimes they differ)
-    tab = tab[rownames(counts),]
+    tab <- tab[rownames(counts),, drop = FALSE];
 
     # Column names drive the types and labeling of the rest of he output.
     col.names <- colnames(tab);
