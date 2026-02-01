@@ -81,6 +81,11 @@ ct.capstone <- as.table(cbind(ct.capstoneCourse[,"Yes"], ct.capstoneRequired[,"Y
 colnames(ct.capstone) <- c("Has Capstone", "Required");
 ReportCorrelationToLatex(categories, ct.capstone, chiTest="bycol");
 
+cat("\\subsection{tab:programs-details}\n\n")
+
+source("ReportCapstoneDetails.r");
+ReportCapstoneDetails(sample);
+
 
 # CAE-CD xt Select Programs
 #ct.caecd.select <- ct.caecd.prog[, c("BS", "MS", "Certificate", "None")];
