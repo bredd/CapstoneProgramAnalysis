@@ -76,9 +76,10 @@ ReportAssociation(sample, "hasCapstone", "CAE-CD");
 cat("\\subsection{tab:programs-capstone}\n")
 
 ct.capstoneCourse <- CrosstabColumns(sample, "category", "hasCapstone");
-ct.capstoneCourse <- as.table(cbind(ct.capstoneCourse[,"Yes"]));
-colnames(ct.capstoneCourse) <- c("Has Capstone");
-ReportCorrelationToLatex(categories, ct.capstoneCourse, chiTest="bycol");
+ct.capstoneRequired <- CrosstabColumns(sample, "category", "Required.for.Degree");
+ct.capstone <- as.table(cbind(ct.capstoneCourse[,"Yes"], ct.capstoneRequired[,"Yes"]));
+colnames(ct.capstone) <- c("Has Capstone", "Required");
+ReportCorrelationToLatex(categories, ct.capstone, chiTest="bycol");
 
 
 # CAE-CD xt Select Programs
