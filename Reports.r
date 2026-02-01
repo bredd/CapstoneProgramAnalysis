@@ -66,6 +66,13 @@ ct.cyberCourse = as.table(cbind(ct.cyberCourse.cyberProg[, "Yes"], ct.cyberCours
 colnames(ct.cyberCourse) <- c("Has Cyber Course", "CAE-CD");
 ReportCorrelationToLatex(counts.cyberCourse, ct.cyberCourse, chiTest="bycol");
 
+ReportAssociation(sample, "Security.Course.in.Program", "hasCyberProg");
+ReportAssociation(sample, "Security.Course.in.Program", "CAE-CD");
+ReportAssociation(sample, "hasCyberProg", "CAE-CD");
+ReportAssociation(sample, "hasCapstone", "Security.Course.in.Program");
+ReportAssociation(sample, "hasCapstone", "hasCyberProg");
+ReportAssociation(sample, "hasCapstone", "CAE-CD");
+
 
 
 # CAE-CD xt Select Programs

@@ -396,6 +396,18 @@ ReportCorrelationToLatexTransposed <- function(counts, tab, label = "~", colLabe
     cat("\n");
 }
 
+ReportAssociation <- function(df, col1, col2) {
+    cat("Association between '", col1, "' and '", col2, "':\n", sep="");
+    chisq <- withwarn.chisq.test(table(df[[col1]], df[[col2]]));
+    if (chisq$warn) {
+        cat("   Unreliable sample.\n\n");
+        return();
+    }
+    cat("    p=", format(round(chisq$p.value, 3), nsmall=3), "\n", sep="");
+    cat("    $\\chi^2_{(", chisq$parameter, ")} = ", format(round(chisq$statistic, 3), nsmall=3), ", p = ", format(round(chisq$p.value, 3), nsmall=3), "$\n", sep="");
+    cat("\n");
+}
+
 
 # Next Steps
 # * Add p-value and Cramer's V to correlation table
