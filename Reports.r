@@ -58,14 +58,6 @@ ReportCorrelationToLatexTransposed(counts.caecd, ct.caecd.select, label="Cyberse
 
 cat("\\subsection{tab:programs-cybercourse}\n")
 
-# Cyber Course xt HasProgram, CAE-CD
-counts.cyberCourse = CountColumn(sample, "Security.Course.in.Program")[c("Required", "Elective", "None")];
-ct.cyberCourse.cyberProg = CrosstabColumns(sample, "Security.Course.in.Program", "hasCyberProg");
-ct.cyberCourse.cae = CrosstabColumns(sample, "Security.Course.in.Program", "CAE-CD");
-ct.cyberCourse = as.table(cbind(ct.cyberCourse.cyberProg[, "Yes"], ct.cyberCourse.cae[, "Yes"]));
-colnames(ct.cyberCourse) <- c("Has Cyber Course", "CAE-CD");
-ReportCorrelationToLatex(counts.cyberCourse, ct.cyberCourse, chiTest="bycol");
-
 ReportAssociation(sample, "Security.Course.in.Program", "hasCyberProg");
 ReportAssociation(sample, "Security.Course.in.Program", "CAE-CD");
 ReportAssociation(sample, "hasCyberProg", "CAE-CD");
