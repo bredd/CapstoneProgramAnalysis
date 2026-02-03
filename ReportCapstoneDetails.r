@@ -41,7 +41,8 @@ ReportCapstoneDetails <- function(data) {
     reportMatches("Has cybersecurity component", "Cyber.Component", "Yes");
     reportMatches("Students form teams", "Team.or.Individual", "Team");
     reportNonMatches("Team has mentor or coach", "Team.Mentor.or.Coach", "None");
-    reportMatches("Projects are sponsored", "Sponsored", "Yes");
+    reportPredicate("Projects may be sponsored", "Sponsored", function(x) {x == "Yes" | x == "Some"});
+    reportPredicate("Projects are always sponsored", "Sponsored", function(x) {x == "Yes"});
     reportPredicate("Duration: Two terms or semesters", "Duration..Weeks.", function(x) {x >= 20});
     reportPredicate("Duration: One term or semester", "Duration..Weeks.", function(x) {x >= 10 & x < 20});
     cat("\\bottomrule\n");
