@@ -28,6 +28,12 @@ ReportCapstoneDetails <- function(data) {
         reportFraction(label, n, d);
     }
 
+    reportTablePredicate <- function(label, pred) {
+        list = pred(data);
+        n = sum(list, na.rm = TRUE);
+        d = sum(!is.na(list));
+        reportFraction(label, n, d);
+    }
 
 
     # Reduce the sample to just those with a capstone program
@@ -39,6 +45,8 @@ ReportCapstoneDetails <- function(data) {
     cat("Capstone Programs & \\phantom{00\\% 000/}(", count, ")\\\\\n", sep="");
     reportMatches("Has cybersecurity prereq.", "Security.Course.in.Program", "Required");
     reportMatches("Has cybersecurity component", "Cyber.Component", "Yes");
+    reportTablePredicate("Has either cybersecurity prereq. or component", function(t) { t$Security.Course.in.Program == "Required" | t$Cyber.Component == "Yes" });
+    reportTablePredicate("Has both cybersecurity prereq. and component", function(t) { t$Security.Course.in.Program == "Required" & t$Cyber.Component == "Yes" });
     reportMatches("Students form teams", "Team.or.Individual", "Team");
     reportNonMatches("Team has mentor or coach", "Team.Mentor.or.Coach", "None");
     reportPredicate("Projects may be sponsored", "Sponsored", function(x) {x == "Yes" | x == "Some"});
