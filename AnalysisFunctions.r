@@ -58,11 +58,11 @@ CountColumn <- function(df, col) {
 
 CountMultivaluedColumn <- function(df, col) {
     c <- df[[col]]
-    c <- c[!is.na(x)]
-    parts <- strsplit(x, "\\s*;\\s*")
+    c <- c[!is.na(c)]
+    parts <- strsplit(c, "\\s*;\\s*")
     values <- unlist(parts)
     values <- values[nzchar(values)]
-    return (table(values));
+    return (sort(table(values), decreasing=TRUE));
 }
 
 # Generate a contingency table on two columns

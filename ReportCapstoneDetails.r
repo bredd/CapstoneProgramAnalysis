@@ -1,7 +1,6 @@
 ReportCapstoneDetails <- function(data) {
 
     reportFraction <- function(label, n, d) {
-        percent = (n / count) * 100;
         cat(label, " & ", round(n / d * 100), "\\% ", sep="");
         pad = 4 - floor(log10(n)) - floor(log10(d));
         if (pad > 0) {
