@@ -54,7 +54,7 @@ ct.caecd.prog <- CrosstabMultivalued(sample, "CAE-CD", "Cybersecurity.Program");
 ct.caecd.select <- ct.caecd.prog[,  c("None", "BS", "MS", "Minor", "Certificate", "Concentration", "IndustryCert")];
 ct.caecd.select <- InvertColumn(counts.caecd, ct.caecd.select, "None", "Any");
 ct.caecd.select <- RenameColumn(ct.caecd.select, "IndustryCert", "Industry Certification");
-ReportCorrelationToLatexTransposed(counts.caecd, ct.caecd.select, label="Cybersecurity Program", colLabel="CAE-CD", sumLabel="Available", chiTest="bycol");
+ReportCorrelationToLatexTransposed(counts.caecd, ct.caecd.select, label="Cybersecurity Program", colLabel="CAE-CD", sumLabel="Offered", chiTest="bycol");
 
 cat("\\subsection{tab:programs-cybercourse}\n")
 
