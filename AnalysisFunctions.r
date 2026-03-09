@@ -325,7 +325,7 @@ ReportCorrelationToLatexTransposed <- function(counts, tab, label = "~", colLabe
     # Put the rows in the table in the same order as the rows in the counts (sometimes they differ)
     tab = tab[rownames(counts),]
 
-    # Column names drive the types and labeling of the rest of he output.
+    # Column names drive the types and labeling of the rest of the output.
     col.names <- colnames(tab);
     row.names <- rownames(counts);
 
