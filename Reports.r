@@ -6,6 +6,7 @@ source("ReportCaeComparison.r")
 sample$hasCapstone <- ifelse(sample$Capstone.CourseId == "None", "No", "Yes")
 sample$hasCyberProg <- ifelse(sample$Cybersecurity.Program == "None", "No", "Yes")
 sample$hasCyberCourse <- ifelse(sample$Security.Course.in.Program == "None", "No", "Yes")
+sample$requiresCyberCourse <- ifelse(sample$Security.Course.in.Program == "Required", "Yes", "No")
 sample <- ExpandMultivaluedColumn(sample, "CAE");
 
 categories <- CountColumn(sample, "category");
@@ -62,9 +63,14 @@ ct.cybercourse.select <- InvertColumn(counts.cybercourse, ct.cybercourse.select,
 ct.cybercourse.select <- RenameColumn(ct.cybercourse.select, "IndustryCert", "Industry Certification");
 ReportCorrelationToLatexTransposed(counts.cybercourse, ct.cybercourse.select, label="Cybersecurity Program", colLabel="Cybersecurity Course", sumLabel="Offered", chiTest="bycol");
 
-# Here I look for a correlation between having a cybersecurity program and having a cybersecurity course.
+# Here I look for a correlation between having a cybersecurity program and having a cybersecurity course or requiring a cybersecurity course.
 # There were too few samples in one of the conditions for a reliable chi squared test so I used Fisher's exact test.
 ct.prog.course <- CrosstabColumns(sample, "hasCyberProg", "hasCyberCourse");
+cat("Has cyber course\n");
+print(fisher.test(ct.prog.course));
+
+ct.prog.course <- CrosstabColumns(sample, "hasCyberProg", "requiresCyberCourse");
+cat("Requires cyber course\n");
 print(fisher.test(ct.prog.course));
 
 # CAE-CD xt Select Programs
